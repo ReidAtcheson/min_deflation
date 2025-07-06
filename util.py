@@ -69,3 +69,52 @@ def cg_residuals(eps: float, m: int, k: int):
 
     cg(A, b, atol=0.0, rtol=1e-14, callback=callback)
     return residuals
+
+
+def prolongation_matrix(m: int):
+    """Return a simple prolongation operator as a sparse matrix.
+
+    The resulting matrix has shape ``(m, ceil(m/2))`` and interpolates a coarse
+    vector by assigning the same value to pairs of fine nodes.  If ``m`` is odd
+    the last fine node corresponds to a single coarse node.
+
+    Parameters
+    ----------
+    m : int
+        Number of fine grid nodes.
+
+    Returns
+    -------
+    scipy.sparse.csr_matrix
+        Prolongation operator ``P``.
+    """
+    if m <= 0:
+        raise ValueError("m must be positive")
+
+    n_coarse = (m + 1) // 2
+    rows: list[int] = []
+    cols: list[int] = []
+    data: list[float] = []
+
+    for j in range(n_coarse):
+        i1 = 2 * j
+        i2 = i1 + 1
+        if i1 < m:
+            rows.append(i1)
+            cols.append(j)
+            data.append(1.0 if i2 >= m else 0.5)
+        if i2 < m:
+            rows.append(i2)
+            cols.append(j)
+            data.append(0.5)
+
+    from scipy.sparse import coo_matrix
+
+    P = coo_matrix((data, (rows, cols)), shape=(m, n_coarse))
+    return P.tocsr()
+
+
+def coarsen_matrix(m: int):
+    """Return a coarsening operator that is the transpose of ``prolongation_matrix``."""
+
+    return prolongation_matrix(m).transpose().tocsr()
