@@ -34,7 +34,7 @@ def chebyshev_diagonal_spd(n: int, eps: float = 1e-8):
         # Chebyshev points of the second kind including endpoints
         nodes = np.cos(np.pi * k / (n - 1))
         diag = 0.5 * (1 - eps) * nodes + 0.5 * (1 + eps)
-    return diags(diag, offsets=0, format="csr")
+    return diags(diag[::-1], offsets=0, format="csr")
 
 
 def cg_residuals(eps: float, m: int, k: int):
