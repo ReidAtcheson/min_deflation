@@ -40,9 +40,16 @@ def run_experiment(samples: int, eps_exp_low: float, eps_exp_high: float,
     X_design = np.column_stack([np.ones(len(y)), X])
     beta, *_ = np.linalg.lstsq(X_design, y, rcond=None)
 
+    y_pred = X_design @ beta
+    ss_res = np.sum((y - y_pred) ** 2)
+    ss_tot = np.sum((y - y.mean()) ** 2)
+    r2 = 1.0 - ss_res / ss_tot if ss_tot else float("nan")
+
     names = ["intercept", "log_eps", "log_m", "k/m"]
     for name, b in zip(names, beta):
         print(f"{name}: {b}")
+
+    print(f"R^2: {r2}")
 
 
 def main() -> None:
