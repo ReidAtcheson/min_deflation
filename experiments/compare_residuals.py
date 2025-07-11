@@ -11,7 +11,7 @@ from util import cg_residuals
 
 def main() -> None:
     eps = 1e-6
-    m = 50000
+    m = 200000
     ks = [0, 1, 4, 16, 32, 64, 128]
 
     plt.figure()
