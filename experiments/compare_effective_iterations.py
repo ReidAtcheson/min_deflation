@@ -31,7 +31,7 @@ def main() -> None:
         residuals = cg_residuals(args.eps, args.m, k)
         cost_per_iter = base_cost + 2 * k * args.m
         xs = [(cost_per_iter * (i + 1))/(args.m*args.m*args.nnz_per_row) for i in range(len(residuals))]
-        plt.semilogy(xs, residuals, label=f"k={k}")
+        plt.semilogy(xs, residuals, label=f"k={100.0*(k / m)}%")
 
     plt.xlabel("floats processed")
     plt.ylabel("residual norm")

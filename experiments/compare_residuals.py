@@ -10,14 +10,14 @@ from util import cg_residuals
 
 
 def main() -> None:
-    eps = 1e-6
-    m = 200000
+    eps = 1e-12
+    m = 20000
     ks = [0, 1, 4, 16, 32, 64, 128]
 
     plt.figure()
     for k in ks:
         res = cg_residuals(eps, m, k)
-        plt.semilogy([it/m for it in range(len(res))], res, label=f"k={k}")
+        plt.semilogy([it/m for it in range(len(res))], res, label=f"k={100.0*(k / m)}%")
     plt.xlabel("iteration")
     plt.ylabel("residual norm")
     plt.legend()
